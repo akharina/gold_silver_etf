@@ -58,6 +58,8 @@ class Data_cleaning:
         for key, temp in input_dict.items():
             temp.reset_index(inplace = True)
             temp.columns = ['Time', 'Open', 'High', 'Low', 'Close', 'volume', 'symbol']
+            to_be_numeric = ['Open', 'High', 'Low', 'Close', 'volume'] 
+            temp[to_be_numeric] = temp[to_be_numeric].apply(pd.to_numeric) 
             temp['Time'] = pd.to_datetime(temp['Time'])
             temp['Year'] = temp['Time'].dt.year
             temp['Month'] = temp['Time'].dt.month
