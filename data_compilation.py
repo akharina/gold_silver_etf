@@ -7,7 +7,7 @@ import json
 
 # def get_keys(path):
 #     '''get API key'''
-#     with open(path) as f: 
+#     with open(path) as f:
 #         return json.load(f)
 
 def call_api_one_symbol(symbol, verbose=True):
@@ -27,6 +27,7 @@ def call_api_one_symbol(symbol, verbose=True):
     else:
         raise ValueError(f'Error getting data from {url} API. Response code: {response.status_code}')  
     df = pd.DataFrame(response.json()['Time Series (Daily)'])
+    df = df.T
     df['symbol'] = symbol
     return df
 
@@ -37,7 +38,7 @@ def call_all_symbols(symbol_list):
         if i == 0:
             df = call_api_one_symbol(symbol)
         else: 
-            df = pd.concat(df, call_api_one_symbol(symbol))
-        return df
+            df = pd.concat([df, call_api_one_symbol(symbol)])
+    return df
 
 
