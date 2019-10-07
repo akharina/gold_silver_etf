@@ -10,7 +10,7 @@ def get_keys(path):
 
 def call_api_one_symbol(symbol, verbose=True):
     '''call API and compile data for each symbol'''
-    api_key = get_keys("/Users/akharina/.secret/alpha_vantage_api.json")
+    api_key = get_keys("/Users/alyssaliguori/secret/alpha_vantage_api.json")
 
     URL = 'https://www.alphavantage.co/query?'
     PARAMS = {'function': 'TIME_SERIES_DAILY', 
