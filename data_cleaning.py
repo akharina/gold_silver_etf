@@ -1,37 +1,39 @@
-"""
-This module is for your data cleaning.
-It should be repeatable.
 
-## PRECLEANING
-There should be a separate script recording how you transformed the json api calls into a dataframe and csv.
-
-## SUPPORT FUNCTIONS
-There can be an unlimited amount of support functions.
-Each support function should have an informative name and return the partially cleaned bit of the dataset.
-"""
 import pandas as pd
 
-def support_function_one(example):
-    pass
+def rename_columns(df):
+    """
+    This function is used to rename columns.
+    """
+    df.columns = ['Time', 'Open', 'High', 'Low', 'Close', 'Volume', 'Symbol']
+    return df
 
-def support_function_two(example):
-    pass
+def change_format(df):
+    """
+    This function changes the format of the data
+    """
+    df['Time'] = pd.to_datetime(df['Time'])
+    to_be_numeric = ['Open', 'High', 'Low', 'Close', 'Volume'] 
+    df[to_be_numeric] = df[to_be_numeric].apply(pd.to_numeric) 
+    return df
 
-def support_function_three(example):
-    pass
+def clean_SLV(df, scale=10):
+    """
+    This function adjust the values for SLV.
+    """
+    numeric_cols = ['Open', 'High', 'Low', 'Close', 'Volume'] 
+    df_sliced = df.loc[(df['Symbol'] == 'SLV') & (df['Time'] <= '2008-07-23'), numeric_cols]
+    df.loc[(df['Symbol'] == 'SLV') & (df['Time'] <= '2008-07-23'), numeric_cols] = df_sliced / scale
+    return df
 
 def full_clean():
     """
-    This is the one function called that will run all the support functions.
-    Assumption: Your data will be saved in a data folder and named "dirty_data.csv"
-
-    :return: cleaned dataset to be passed to hypothesis testing and visualization modules.
+    This function is implemented to clean the data.
     """
-    dirty_data = pd.read_csv("./data/dirty_data.csv")
-
-    cleaning_data1 = support_function_one(dirty_data)
-    cleaning_data2 = support_function_two(cleaning_data1)
-    cleaned_data= support_function_three(cleaning_data2)
-    cleaned_data.to_csv('./data/cleaned_for_testing.csv')
+    #To read the data
+    dirty_data = pd.read_csv('data_dirty.csv')
+    cleaning_data1 = rename_columns(dirty_data)
+    cleaning_data2 = change_format(cleaning_data1)
+    cleaning_data3 = clean_SLV(cleaning_data2)
     
-    return cleaned_data
+    return cleaning_data3

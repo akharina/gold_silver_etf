@@ -3,9 +3,6 @@
 import requests
 import pandas as pd
 import json
-
-
-
 def get_keys(path):
     '''get API key'''
     with open(path) as f: 
