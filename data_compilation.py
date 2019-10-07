@@ -5,20 +5,20 @@ import json
 ''' This script compiles data from Alpha Vantage API
     and transforms the JSON output into a dataframe and CSV file'''
 
-# def get_keys(path):
-#     '''get API key'''
-#     with open(path) as f:
-#         return json.load(f)
+def get_keys(path):
+    '''get API key'''
+    with open(path) as f:
+        return json.load(f)
 
 def call_api_one_symbol(symbol, verbose=True):
     '''call API and compile data for each symbol'''
-    #api_key = get_keys('/Users/alyssaliguori/secret/alpha_vantage_api.json')
+    api_key = get_keys('/Users/jalalkiani/.secret/Alpha_Vantage.json')
 
     URL = 'https://www.alphavantage.co/query?'
     PARAMS = {'function': 'TIME_SERIES_DAILY', 
               'symbol': symbol,
               'outputsize': 'full',
-              'apikey': 'QQWPF2KTW701PG7H'
+              'apikey': api_key
               }
     response = requests.get(URL, PARAMS)
     if response.status_code == 200:
