@@ -1,21 +1,31 @@
+import requests
+import pandas as pd
+import json
+
 ''' This script compiles data from Alpha Vantage API
     and transforms the JSON output into a dataframe and CSV file'''
 
-def get_keys(path):
-    '''get API key'''
-    with open(path) as f: 
-        return json.load(f)
+# def get_keys(path):
+#     '''get API key'''
+#     with open(path) as f: 
+#         return json.load(f)
 
 def call_api_one_symbol(symbol, verbose=True):
     '''call API and compile data for each symbol'''
+    #api_key = get_keys('/Users/alyssaliguori/secret/alpha_vantage_api.json')
+
     URL = 'https://www.alphavantage.co/query?'
     PARAMS = {'function': 'TIME_SERIES_DAILY', 
-              'symbol': f'{symbol}',
+              'symbol': symbol,
               'outputsize': 'full',
-              'apikey': api_key
+              'apikey': 'QQWPF2KTW701PG7H'
               }
     response = requests.get(URL, PARAMS)
-    print(f'{symbol} response code: {response.status_code}')
+    if response.status_code == 200:
+        if verbose: 
+            print(f'The response code for {symbol} is {response.status_code}')
+    else:
+        raise ValueError(f'Error getting data from {url} API. Response code: {response.status_code}')  
     df = pd.DataFrame(response.json()['Time Series (Daily)'])
     df['symbol'] = symbol
     return df
