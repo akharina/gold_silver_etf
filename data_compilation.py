@@ -5,17 +5,6 @@ import pandas as pd
 import json
 
 
-<<<<<<< HEAD
-def get_keys(path):
-    '''get API key'''
-    with open(path) as f:
-        return json.load(f)
-
-def call_api_one_symbol(symbol, verbose=True):
-    '''call API and compile data for each symbol'''
-    api_key = get_keys('/Users/jalalkiani/.secret/Alpha_Vantage.json')
-=======
-
 def get_keys(path):
     '''get API key'''
     with open(path) as f: 
@@ -24,8 +13,6 @@ def get_keys(path):
 def call_api_one_symbol(symbol, verbose=True):
     '''call API and compile data for each symbol'''
     api_key = get_keys("/Users/akharina/.secret/alpha_vantage_api.json")
->>>>>>> e52c6b1b23c60f1db274aa8d1e7680b48e2982fa
-
     URL = 'https://www.alphavantage.co/query?'
     PARAMS = {'function': 'TIME_SERIES_DAILY', 
               'symbol': symbol,
