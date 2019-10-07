@@ -36,4 +36,8 @@ def full_clean():
     cleaning_data3 = clean_SLV(cleaning_data2)
     
     cleaning_data3.to_csv('data/clean_data.csv')
+<<<<<<< HEAD
+=======
+    
+>>>>>>> a892fa38ee7951658dfc84b573629c4f3a95351c
     return cleaning_data3
