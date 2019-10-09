@@ -142,7 +142,7 @@ def hypothesis_test_one(alpha, VOL_ranking_df, df_clean, target_var, target_symb
               f'\n Due to these results, we  {assertion} state that the seasonality in the volatility is due to chance in {month}')
         print('-'*100)
     if plot_option:
-        fig, ax = plt.subplots(1,1,figsize = (14, 5));
+        fig, ax = plt.subplots(1,1,figsize = (8, 5));
         n, bins, patches = plt.hist(all_ranking, bins = 30, color = 'b', density = True);
         ax.set_ylabel('Probability density', fontsize=20);
         ax.set_xlabel('Average Ranking', fontsize=20);
@@ -157,8 +157,8 @@ def hypothesis_test_one(alpha, VOL_ranking_df, df_clean, target_var, target_symb
             if c < lower_bound or c >= upper_bound:
                 plt.setp(p, 'facecolor', 'r')
         pvalue = float(VOL_ranking_mean.loc[VOL_ranking_mean['period'] == season_for_plot]['pvalue'])
-        ax.text(bins.max() - 0.15*(bins.max()-bins.min()), 0.4, f'P-value = {round(pvalue, 2)}', fontsize=16)
-        plt.savefig(f'img/bootstraping_{target_symbol}_{target_var}_{season_for_plot}.png', transparent = True, figure = fig)
+        ax.text(bins.max() - 0.23*(bins.max()-bins.min()), 0.3, f'P-value = {round(pvalue, 2)}', fontsize=16)
+        plt.savefig(f'img/bootstraping_{target_symbol}_{target_var}_{season_for_plot}.png', transparent = False, figure = fig)
     return VOL_ranking_mean
 
 def hypothesis_test_two():

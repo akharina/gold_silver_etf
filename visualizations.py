@@ -66,7 +66,62 @@ def boxplot_plot(package=None, input_vars=None, target_vars=None):
     plt.figure(figsize=(16, 10), dpi=80)
 
     pass
+def visualizations_four(df, symbols, type_price = 'close',
+                   start_date = '2000-01-01', end_date = '2010-01-01',
+                   fill_na = 'ffill',  moving_average_plot = False , 
+                   short_window = None , long_window = None):
+    """
+    This function get a dataframe as input
+    and make several visualizations
+    
+    inputs are:
+    df : data frame
+    symbol: showing the previous metal
+    start_date: the start date for ploting
+    end_date: the end date for ploting
+    short_window and long_window are used for making the moving averages plots
+    fill_na: Method to use for filling holes in reindexed Series pad / ffill: propagate last valid observation forward to next     valid backfill / bfill: use next valid observation to fill gap.
+    """
+    df = df.loc[(df['date'] >= start_date) & (df['date'] <= end_date)]
+    
+    if df.index.name != 'date':
+        df.set_index('date', inplace = True)
+        
+     # Plot everything by leveraging the very powerful matplotlib package
+    fig, ax = plt.subplots(figsize=(16,9))
+  
+    for symbol in symbols:
+        #slic the data frame
+        df_symbol = df.loc[df['symbol'] == symbol]
+    
+        # Getting just the adjusted prices. This will return a Pandas DataFrame
+        # The index in this DataFrame is the major index of the panel_data.
+        price = df_symbol[type_price] 
 
+        # Getting all weekdays between start_date and end_date
+        all_weekdays = pd.date_range(start=start_date, end=end_date, freq='B')
+
+        #Align the existing prices in adj price with our new set of dates.
+        # Reindex price using all_weekdays as the new index
+        price = price.reindex(all_weekdays)
+
+        # Reindexing will insert missing values (NaN) for the dates that were not present
+        # in the original set. To cope with this, we can fill the missing by replacing them
+        # with the latest available price for each instrument.
+        price = price.fillna(method='ffill')
+
+        ax.plot(price.index, price, label= f'{symbol}')
+        if moving_average_plot:
+            # Calculate the 20 and 100 days moving averages of the closing prices
+            short_rolling = price.rolling(window=20).mean()
+            long_rolling = price.rolling(window=100).mean()
+            ax.plot(short_rolling.index, short_rolling, label=f'{short_window} days rolling')
+            ax.plot(long_rolling.index, long_rolling, label=f'{long_window} days rolling')
+    ax.set_xlabel('Date', fontsize = 16)
+    ax.set_title('Closing price', fontsize = 18)
+    ax.set_ylabel('Price ($)', fontsize = 16)
+    ax.legend()
+    plt.savefig(f'img/Time_series.png', transparent = False, figure = fig)
 
 def visualization_one(volatility_set, target_symbol, target_var, output_image_name=None):
     """
@@ -76,20 +131,21 @@ def visualization_one(volatility_set, target_symbol, target_var, output_image_na
     :target_symbol including 'SLV', 'SIL', 'GLD', 'GDX', 'DJI'
     :volatility_set: a set including volatility ranking and volatility values
     """
+    sns.set(font_scale=3)
     #df_clean = pd.read_csv('data/clean_data.csv')
 
     monthly_vol_df, VOL_ranking_df = volatility_set
     my_order = VOL_ranking_df.groupby("period")["ranking"].mean().sort_values(ascending=False).index
     #my_order = monthly_vol_df.groupby("month")["volatility"].mean().sort_values(ascending=False).index
 
-    fig, axes = plt.subplots(2,1, figsize = (14, 14))
+    fig, axes = plt.subplots(2,1, figsize = (20, 14))
     sns.set(style="whitegrid", palette="pastel", color_codes=True)
     #sns.set(style="white", context="talk")
     g = sns.violinplot(x= 'period', y = 'volatility', data = monthly_vol_df, order = my_order, ax= axes[0], color = 'skyblue');
-    axes[0].set_xlabel('', fontsize=20)
-    axes[0].set_ylabel('Volatility', fontsize=20);
-    axes[0].set_title(f'Average Volatility for {target_symbol}', fontsize=20);
-    axes[0].tick_params(labelsize=16)
+    axes[0].set_xlabel('', fontsize=22)
+    axes[0].set_ylabel('Volatility', fontsize=24);
+    axes[0].set_title(f'Average Volatility for {target_symbol}', fontsize=26);
+    axes[0].tick_params(labelsize=24)
 
     
     g1 = sns.barplot(x='period',y='ranking', data = VOL_ranking_df, ax = axes[1], order = my_order, color = 'palegreen')
@@ -100,15 +156,15 @@ def visualization_one(volatility_set, target_symbol, target_var, output_image_na
         axes[1].text(index-0.2,float(row['ranking'])+0.05,
                      round(float(row['ranking']),2),
                      color='black', ha="center",
-                    fontsize = 14)
-    axes[1].set_xlabel('', fontsize=20);
-    axes[1].set_ylabel('Ranking', fontsize=20);
-    axes[1].set_title(f'Ranking based on volatility for {target_symbol}', fontsize=20);
-    axes[1].tick_params(labelsize=16)
+                    fontsize = 16)
+    axes[1].set_xlabel('', fontsize=24);
+    axes[1].set_ylabel('Ranking', fontsize=22);
+    axes[1].set_title(f'Ranking based on volatility for {target_symbol}', fontsize=26);
+    axes[1].tick_params(labelsize=24)
     #plt.legend()
 
     # exporting the image to the img folder
-    plt.savefig(f'img/{output_image_name}.png', transparent = True, figure = fig)
+    plt.savefig(f'img/{output_image_name}.png', transparent = False, figure = fig)
 
 
 # please fully flesh out this function to meet same specifications of visualization one
