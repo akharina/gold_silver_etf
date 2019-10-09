@@ -41,7 +41,3 @@ def call_all_symbols(symbol_list):
             df = pd.concat([df, call_api_one_symbol(symbol)])
     df.to_csv('data/dirty_data.csv')
     return df
-
-
-
-
