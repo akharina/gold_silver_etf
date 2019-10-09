@@ -32,7 +32,6 @@ Others:
 (placeholder for presentation slides)
 
 ### Outstanding Tasks
-- Clean Data
 - Perform hypothesis testing on precious metal ETF data from Alpha Vantage
 - Test 3 separate hypotheses:
   1)
@@ -41,10 +40,3 @@ Others:
  - Explain what test we are using, why, and any assumptions
  - Hypothesis test visualizations (at least 3)
  - Data exploration visualizations (at least 2)
-
-
-### Responsibilities:
-
-10/05/19
-- Update README (AK)
-- Collect data and compare (AL,JK)
