@@ -79,16 +79,17 @@ def visualization_one(volatility_set, target_symbol, target_var, output_image_na
     #df_clean = pd.read_csv('data/clean_data.csv')
 
     monthly_vol_df, VOL_ranking_df = volatility_set
-    my_order = monthly_vol_df.groupby("month")["volatility"].mean().sort_values(ascending=False).index
+    my_order = VOL_ranking_df.groupby("month")["ranking"].mean().sort_values(ascending=False).index
+    #my_order = monthly_vol_df.groupby("month")["volatility"].mean().sort_values(ascending=False).index
 
     fig, axes = plt.subplots(2,1, figsize = (14, 14))
     sns.set(style="whitegrid", palette="pastel", color_codes=True)
     g = sns.violinplot(x= 'month', y = 'volatility', data = monthly_vol_df, order = my_order, ax= axes[0]);
     axes[0].set_xlabel('Month', fontsize=20)
     axes[0].set_ylabel('Volatility', fontsize=20);
-    axes[0].set_title('Volatility per month', fontsize=20);
+    axes[0].set_title(f'Volatility per month for {target_symbol}', fontsize=20);
 
-    my_order = VOL_ranking_df.groupby("month")["ranking"].mean().sort_values(ascending=False).index
+    
     g1 = sns.barplot(x='month',y='ranking', data = VOL_ranking_df, ax = axes[1], order = my_order)
 
     groupedvalues=VOL_ranking_df.groupby('month').mean().reset_index()
@@ -100,7 +101,7 @@ def visualization_one(volatility_set, target_symbol, target_var, output_image_na
                     fontsize = 14)
     axes[1].set_xlabel('Month', fontsize=20);
     axes[1].set_ylabel('Ranking', fontsize=20);
-    axes[1].set_title('Ranking based on volatility', fontsize=20);
+    axes[1].set_title(f'Ranking based on volatility for {target_symbol}', fontsize=20);
     #plt.legend()
 
     # exporting the image to the img folder
