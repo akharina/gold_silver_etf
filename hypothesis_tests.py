@@ -84,7 +84,7 @@ def hypothesis_test_three_prep(df_clean, type=None, alpha=0.05):
        Signature: hypothesis_test_three_prep(df, type= None, alpha=0.05).
        type options: day, week, month'''
 
-    df_clean['daily_movement'] = (df_clean.open-df_clean.close)*100/df_clean.open
+    df_clean['daily_movement'] = (df_clean.close-df_clean.open)*100/df_clean.open
     df_clean = df_clean.loc[df_clean['date'] >= '2014-10-06']
     df_clean_SLV = df_clean.loc[df_clean['symbol'] == 'SLV'][[
         'date', 'symbol', 'open', 'close', 'daily_movement']]
@@ -101,8 +101,8 @@ def hypothesis_test_three_prep(df_clean, type=None, alpha=0.05):
             df_slv_vs_gld['daily_movement_GLD']
 
     # Remove outliers
-        data = df_slv_vs_gld[(np.abs(stats.zscore(
-            df_slv_vs_gld[['daily_movement_SLV', 'daily_movement_GLD', 'delta']])) < 3).all(axis=1)]
+        df_slv_vs_gld = df_slv_vs_gld[(np.abs(stats.zscore(
+            df_slv_vs_gld[['daily_movement_SLV', 'daily_movement_GLD', 'delta']])) < 2.5).all(axis=1)]
 
         a = df_slv_vs_gld['daily_movement_SLV']
         b = df_slv_vs_gld['daily_movement_GLD']
@@ -124,7 +124,7 @@ def hypothesis_test_three_prep(df_clean, type=None, alpha=0.05):
 
         # Remove outliers
         df_slv_vs_gld_wk = df_slv_vs_gld_wk[(
-            np.abs(stats.zscore(df_slv_vs_gld_wk[['wk_movement_SLV', 'wk_movement_GLD']])) < 3).all(axis=1)]
+            np.abs(stats.zscore(df_slv_vs_gld_wk[['wk_movement_SLV', 'wk_movement_GLD']])) < 2.5).all(axis=1)]
 
         a = df_slv_vs_gld_wk['wk_movement_SLV']
         b = df_slv_vs_gld_wk['wk_movement_GLD']
@@ -147,7 +147,7 @@ def hypothesis_test_three_prep(df_clean, type=None, alpha=0.05):
 
         # Remove outliers
         df_slv_vs_gld_mo = df_slv_vs_gld_mo[(
-            np.abs(stats.zscore(df_slv_vs_gld_mo[['mo_movement_SLV', 'mo_movement_GLD']])) < 3).all(axis=1)]
+            np.abs(stats.zscore(df_slv_vs_gld_mo[['mo_movement_SLV', 'mo_movement_GLD']])) < 2.5).all(axis=1)]
 
         a = df_slv_vs_gld_mo['mo_movement_SLV']
         b = df_slv_vs_gld_mo['mo_movement_GLD']
