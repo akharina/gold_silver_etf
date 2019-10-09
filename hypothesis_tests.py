@@ -6,7 +6,7 @@ from sklearn.utils import resample
 import matplotlib.pyplot as plt
 
 
-def bootstrap_sim(df, target_var, target_symbol, n_sim = 1000):
+def bootstrap_sim(df, target_var, target_symbol, volability_period, n_sim = 1000):
     """
     This function gets the clean dataframe and compute the daily % 
     change. Then, it does resampling and geneate n_sim from daily % 
@@ -19,6 +19,7 @@ def bootstrap_sim(df, target_var, target_symbol, n_sim = 1000):
     :return 
 
     """
+    #volability_period = 'M'
     df = df.loc[df['symbol'] == target_symbol]
     if df.index.name != 'date':
         df.set_index('date', inplace = True)
@@ -42,19 +43,31 @@ def bootstrap_sim(df, target_var, target_symbol, n_sim = 1000):
         
         
         #Use standard deviation as a measure of volatility 
-        # and multiplying by sqrt of number of months (12)
-        monthly_vol_sampling = daily_change_sampling.resample('M').std()* np.sqrt(12)
+        # and multiplying by sqrt of number of months (12) or the number of season
+        if volability_period == 'M':
+            num_s = 12
+        elif volability_period == 'Q':
+            num_s = 4
+        else:
+            raise ValueError(f'The volability_period of {volability_period} is not valid')  
+        monthly_vol_sampling = daily_change_sampling.resample(volability_period).std()* np.sqrt(num_s)
         
         
         #Rank the data on ascending order
         
         ranked_months_sampling = pd.DataFrame(monthly_vol_sampling.groupby(monthly_vol_sampling.index.year).rank()).reset_index()
         
-        ranked_months_sampling.columns = ['month', 'ranking']
+        ranked_months_sampling.columns = ['period', 'ranking']
         
-        ranked_months_sampling['month'] = ranked_months_sampling['month'].map(lambda x: x.strftime('%b'))
+        #ranked_months_sampling['period'] = ranked_months_sampling['period'].map(lambda x: x.strftime('%b'))
+        if volability_period == 'M':
+            ranked_months_sampling['period'] = ranked_months_sampling['period'].map(lambda x: x.strftime('%b'))
+        elif volability_period == 'Q':
+            ranked_months_sampling['period'] = ranked_months_sampling['period'].dt.quarter.map(lambda x: 'Quarter ' + str(x))
+        else:
+            raise ValueError(f'The volability_period of {volability_period} is not valid') 
         
-        sim_ranking = ranked_months_sampling.groupby('month').mean()
+        sim_ranking = ranked_months_sampling.groupby('period').mean()
         
         #add each of 1000 sims into df
         df_sim = pd.concat([df_sim,sim_ranking],axis=1)
@@ -90,7 +103,8 @@ def compare_pval_alpha(p_val, alpha):
     return status
 
 
-def hypothesis_test_one(alpha, VOL_ranking_df, df_clean, target_var, target_symbol, plot_option = False, month_plot ='Nov'):
+def hypothesis_test_one(alpha, VOL_ranking_df, df_clean, target_var, target_symbol,
+                        volability_period, n_bootstrap = 1000, plot_option = False, season_for_plot ='Nov'):
     """
     By: Jalal Kiani
     Over the past 13 years, October has been the most volatile month 
@@ -109,14 +123,14 @@ def hypothesis_test_one(alpha, VOL_ranking_df, df_clean, target_var, target_symb
     :return Pvalue,  This function return 
     """
     # Get data for tests
-    df_sim, all_ranking = bootstrap_sim(df_clean, target_var, target_symbol, 1000)
-    VOL_ranking_mean = VOL_ranking_df.groupby('month').mean().reset_index()
+    df_sim, all_ranking = bootstrap_sim(df_clean, target_var, target_symbol,volability_period, n_bootstrap)
+    VOL_ranking_mean = VOL_ranking_df.groupby('period').mean().reset_index()
     mean_ranking = all_ranking.mean()
     VOL_ranking_mean['pvalue'] = 2*VOL_ranking_mean['ranking'].\
     map(lambda x: np.sum(all_ranking > x) / all_ranking.shape[0]\
         if x > mean_ranking else np.sum(all_ranking < x) / all_ranking.shape[0])
     
-    for month, p_val in zip(VOL_ranking_mean['month'], VOL_ranking_mean['pvalue']):
+    for month, p_val in zip(VOL_ranking_mean['period'], VOL_ranking_mean['pvalue']):
         # starter code for return statement and printed results
         status = compare_pval_alpha(p_val, alpha)
         assertion = ''
@@ -133,7 +147,7 @@ def hypothesis_test_one(alpha, VOL_ranking_df, df_clean, target_var, target_symb
         ax.set_ylabel('Probability density', fontsize=20);
         ax.set_xlabel('Average Ranking', fontsize=20);
         ax.set_title('Bootstrapping results', fontsize=20);
-        upper_bound = float(VOL_ranking_mean.loc[VOL_ranking_mean['month'] == month_plot]['ranking'])
+        upper_bound = float(VOL_ranking_mean.loc[VOL_ranking_mean['period'] == season_for_plot]['ranking'])
         lower_bound = mean_ranking - (upper_bound - mean_ranking)
         upper_bound = bins[(np.abs(bins - upper_bound)).argmin()]
         lower_bound = bins[(np.abs(bins - lower_bound)).argmin()]
@@ -142,9 +156,9 @@ def hypothesis_test_one(alpha, VOL_ranking_df, df_clean, target_var, target_symb
         for c, p in zip(bins, patches):
             if c < lower_bound or c >= upper_bound:
                 plt.setp(p, 'facecolor', 'r')
-        pvalue = float(VOL_ranking_mean.loc[VOL_ranking_mean['month'] == month_plot]['pvalue'])
-        ax.text(3.5, 0.3, f'P-value = {round(pvalue, 2)}', fontsize=16)
-        plt.savefig(f'img/bootstraping_{target_symbol}_{month_plot}.png', transparent = True, figure = fig)
+        pvalue = float(VOL_ranking_mean.loc[VOL_ranking_mean['period'] == season_for_plot]['pvalue'])
+        ax.text(bins.max() - 0.15*(bins.max()-bins.min()), 0.4, f'P-value = {round(pvalue, 2)}', fontsize=16)
+        plt.savefig(f'img/bootstraping_{target_symbol}_{target_var}_{season_for_plot}.png', transparent = True, figure = fig)
     return VOL_ranking_mean
 
 def hypothesis_test_two():

@@ -79,29 +79,32 @@ def visualization_one(volatility_set, target_symbol, target_var, output_image_na
     #df_clean = pd.read_csv('data/clean_data.csv')
 
     monthly_vol_df, VOL_ranking_df = volatility_set
-    my_order = VOL_ranking_df.groupby("month")["ranking"].mean().sort_values(ascending=False).index
+    my_order = VOL_ranking_df.groupby("period")["ranking"].mean().sort_values(ascending=False).index
     #my_order = monthly_vol_df.groupby("month")["volatility"].mean().sort_values(ascending=False).index
 
     fig, axes = plt.subplots(2,1, figsize = (14, 14))
     sns.set(style="whitegrid", palette="pastel", color_codes=True)
-    g = sns.violinplot(x= 'month', y = 'volatility', data = monthly_vol_df, order = my_order, ax= axes[0]);
-    axes[0].set_xlabel('Month', fontsize=20)
+    #sns.set(style="white", context="talk")
+    g = sns.violinplot(x= 'period', y = 'volatility', data = monthly_vol_df, order = my_order, ax= axes[0], color = 'skyblue');
+    axes[0].set_xlabel('', fontsize=20)
     axes[0].set_ylabel('Volatility', fontsize=20);
-    axes[0].set_title(f'Volatility per month for {target_symbol}', fontsize=20);
+    axes[0].set_title(f'Average Volatility for {target_symbol}', fontsize=20);
+    axes[0].tick_params(labelsize=16)
 
     
-    g1 = sns.barplot(x='month',y='ranking', data = VOL_ranking_df, ax = axes[1], order = my_order)
+    g1 = sns.barplot(x='period',y='ranking', data = VOL_ranking_df, ax = axes[1], order = my_order, color = 'palegreen')
 
-    groupedvalues=VOL_ranking_df.groupby('month').mean().reset_index()
+    groupedvalues=VOL_ranking_df.groupby('period').mean().reset_index()
     for index, order in enumerate(my_order):
-        row = groupedvalues.loc[groupedvalues['month'] == order]
-        axes[1].text(index-0.2,float(row['ranking'])+0.2,
+        row = groupedvalues.loc[groupedvalues['period'] == order]
+        axes[1].text(index-0.2,float(row['ranking'])+0.05,
                      round(float(row['ranking']),2),
                      color='black', ha="center",
                     fontsize = 14)
-    axes[1].set_xlabel('Month', fontsize=20);
+    axes[1].set_xlabel('', fontsize=20);
     axes[1].set_ylabel('Ranking', fontsize=20);
     axes[1].set_title(f'Ranking based on volatility for {target_symbol}', fontsize=20);
+    axes[1].tick_params(labelsize=16)
     #plt.legend()
 
     # exporting the image to the img folder
