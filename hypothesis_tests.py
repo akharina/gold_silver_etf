@@ -85,17 +85,15 @@ def hypothesis_test_three_prep(df_clean, type=None, alpha=0.05):
        type options: day, week, month'''
 
     df_clean['daily_movement'] = (df_clean.open-df_clean.close)*100/df_clean.open
+    df_clean = df_clean.loc[df_clean['date'] >= '2014-10-06']
     df_clean_SLV = df_clean.loc[df_clean['symbol'] == 'SLV'][[
         'date', 'symbol', 'open', 'close', 'daily_movement']]
     df_clean_GLD = df_clean.loc[df_clean['symbol'] == 'GLD'][[
         'date', 'symbol', 'open', 'close', 'daily_movement']]
 
     if type == 'day':
-
-        SLV_scaled = df_clean_SLV.loc[df_clean_SLV.date >= '2014-10-06']
-        GLD_scaled = df_clean_GLD.loc[df_clean_GLD.date >= '2014-10-06']
-        df_slv_vs_gld = pd.merge(SLV_scaled,
-                                 GLD_scaled,
+        df_slv_vs_gld = pd.merge(df_clean_SLV,
+                                 df_clean_GLD,
                                  how='left',
                                  on='date',
                                  suffixes=('_SLV', '_GLD'))
@@ -128,9 +126,6 @@ def hypothesis_test_three_prep(df_clean, type=None, alpha=0.05):
         df_slv_vs_gld_wk = df_slv_vs_gld_wk[(
             np.abs(stats.zscore(df_slv_vs_gld_wk[['wk_movement_SLV', 'wk_movement_GLD']])) < 3).all(axis=1)]
 
-        # Isolate dates for last 5 years
-        df_slv_vs_gld_wk = df_slv_vs_gld_wk.loc[df_slv_vs_gld_wk.date > '2014-10-06']
-
         a = df_slv_vs_gld_wk['wk_movement_SLV']
         b = df_slv_vs_gld_wk['wk_movement_GLD']
 
@@ -154,9 +149,6 @@ def hypothesis_test_three_prep(df_clean, type=None, alpha=0.05):
         df_slv_vs_gld_mo = df_slv_vs_gld_mo[(
             np.abs(stats.zscore(df_slv_vs_gld_mo[['mo_movement_SLV', 'mo_movement_GLD']])) < 3).all(axis=1)]
 
-        # Isolate dates for last 5 years
-        df_slv_vs_gld_mo = df_slv_vs_gld_mo.loc[df_slv_vs_gld_mo.date > '2014-10-06']
-
         a = df_slv_vs_gld_mo['mo_movement_SLV']
         b = df_slv_vs_gld_mo['mo_movement_GLD']
 
@@ -169,6 +161,7 @@ def hypothesis_test_three_pttest(a, b, alpha=0.05):
         a,b = array_like. The arrays must have the same shape.'''
 
     t_val, p_val = stats.ttest_rel(a, b)
+    print(f"t_val = {t_val}, p_val = {p_val}")
 
     status = compare_pval_alpha(p_val, alpha)
     assertion = ''
