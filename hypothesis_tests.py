@@ -84,7 +84,7 @@ def hypothesis_test_three_prep(df_clean, type=None, alpha=0.05):
        Signature: hypothesis_test_three_prep(df, type= None, alpha=0.05).
        type options: day, week, month'''
 
-    df_clean['daily_movement'] = (df_clean.open-df_clean.close)*100/df_clean.open
+    df_clean['daily_movement'] = (df_clean.close-df_clean.open)*100/df_clean.open
     df_clean = df_clean.loc[df_clean['date'] >= '2014-10-06']
     df_clean_SLV = df_clean.loc[df_clean['symbol'] == 'SLV'][[
         'date', 'symbol', 'open', 'close', 'daily_movement']]
