@@ -21,22 +21,24 @@ The dataset used in this project is obtained via [Alpha Vantage API](https://www
 
 ## Repository Map:
 Notebooks:
-1. Data_Compilation_and_Cleaning
 
 Scripts:
-1. data_prep.py
-2. visualizations.py
-3. hypothesis_tests.py
+1. data_cleaning.py
+2. data_compilation.py
 
 Others:
 (placeholder for presentation slides)
 
-### Outstanding Tasks
+### Tasks
 - Perform hypothesis testing on precious metal ETF data from Alpha Vantage
 - Test 3 separate hypotheses:
-  1)
-  2)
-  3)
+  1) Seasonality?
+  2) Mean close price of recent?
+  3) Silver vs. gold?
  - Explain what test we are using, why, and any assumptions
+    Bootstrapping
+    ANOVA
+    T-Test
+    
  - Hypothesis test visualizations (at least 3)
  - Data exploration visualizations (at least 2)
