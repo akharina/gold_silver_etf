@@ -26,8 +26,8 @@ Scripts:
 1. data_cleaning.py
 2. data_compilation.py
 
-Others:
-(placeholder for presentation slides)
+Slides:
+https://docs.google.com/presentation/d/1bvhdiyQzB6g3ht1ZsVV0I_YWuXt2cdiKQdgsHO2QVos/edit?ts=5d9d3cdb#slide=id.g621d2c2579_0_404
 
 ### Tasks
 - Perform hypothesis testing on precious metal ETF data from Alpha Vantage
