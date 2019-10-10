@@ -21,6 +21,8 @@ The dataset used in this project is obtained via [Alpha Vantage API](https://www
 
 ## Repository Map:
 Notebooks:
+1.
+2. al-ntbk-v3 (ANOVA) 
 
 Scripts:
 1. data_cleaning.py
