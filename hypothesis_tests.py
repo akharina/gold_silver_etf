@@ -5,6 +5,14 @@ import math
 from sklearn.utils import resample
 import matplotlib.pyplot as plt
 
+def compare_pval_alpha(p_val, alpha):
+    status = ''
+    if p_val > alpha:
+        status = "Fail to reject"
+    else:
+        status = 'Reject'
+    return status
+
 
 def bootstrap_sim(df, target_var, target_symbol, volability_period, n_sim = 1000):
     """
@@ -79,7 +87,6 @@ def bootstrap_sim(df, target_var, target_symbol, volability_period, n_sim = 1000
 def hypothesis_test_one(alpha, VOL_ranking_df, df_clean, target_var, target_symbol,
                         volability_period, n_bootstrap = 1000, plot_option = False, season_for_plot ='Nov'):
     """
-    By: Jalal Kiani
     Over the past 13 years, October has been the most volatile month 
     on average for the GLD stock and December the least volatile. The question
     is whether this is a persistent signal or just noise in the data?
