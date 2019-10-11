@@ -21,26 +21,20 @@ The dataset used in this project is obtained via [Alpha Vantage API](https://www
 
 ## Repository Map:
 Notebooks:
-1.
+1. Tech_Notebook
 2. al-ntbk-v3 (ANOVA) 
 
 Scripts:
-1. data_cleaning.py
-2. data_compilation.py
+1. data_compilation.py
+2. data_cleaning.py 
+3. visualizations.py
+4. hypothesis_tests.py
 
-Slides:
-https://docs.google.com/presentation/d/1bvhdiyQzB6g3ht1ZsVV0I_YWuXt2cdiKQdgsHO2QVos/edit?ts=5d9d3cdb#slide=id.g621d2c2579_0_404
+Presentation Slides:
+1. Presentations.pdf
 
-### Tasks
-- Perform hypothesis testing on precious metal ETF data from Alpha Vantage
-- Test 3 separate hypotheses:
-  1) Seasonality?
-  2) Mean close price of recent?
-  3) Silver vs. gold?
- - Explain what test we are using, why, and any assumptions
-    Bootstrapping
-    ANOVA
-    T-Test
-    
- - Hypothesis test visualizations (at least 3)
- - Data exploration visualizations (at least 2)
+### Hypothesis Tests:
+  1) Testing seasonality of investment using bootstrapping
+  2) Comparing silver, silver mining, and gold mining ETF prices using ANOVA
+  3) Comparing daily, weekly, and monthly movements of silver and gold ETFs using paired t-test
+ 
