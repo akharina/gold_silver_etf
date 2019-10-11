@@ -167,10 +167,42 @@ def visualization_one(volatility_set, target_symbol, target_var, output_image_na
     plt.savefig(f'img/{output_image_name}.png', transparent = False, figure = fig)
 
 
-# please fully flesh out this function to meet same specifications of visualization one
 
-def visualization_two(output_image_name):
-    pass
+def visualization_SLV_vs_GLD_5yrs(df_clean, date='2014-10-06'):
+    """
+    This function is used to visualize the long term movement of SLV and GLD
+    Takes two arguments: clean data and the date when the 5-year period starts.
+    
+    """
+    #Preparing the dataset
+    df_clean_SLV = df_clean.loc[df_clean['symbol'] == 'SLV'][['date','symbol','open','close']]
+    df_clean_GLD = df_clean.loc[df_clean['symbol'] == 'GLD'][['date','symbol','open','close']]
+    df_clean_GLD.date.isin(df_clean_SLV.date).value_counts()
+    
+    SLV_scaled = df_clean_SLV.loc[df_clean_SLV.date>=date].copy()
+    GLD_scaled = df_clean_GLD.loc[df_clean_GLD.date>=date].copy()
+
+    SLV_scaled['scale'] = SLV_scaled['close']/SLV_scaled.iloc[-1]['close']
+    GLD_scaled['scale'] = GLD_scaled['close']/GLD_scaled.iloc[-1]['close']
+
+    SLV_scaled['pct_change'] = SLV_scaled.close.pct_change()*100
+    GLD_scaled['pct_change'] = GLD_scaled.close.pct_change()*100
+    SLV_scaled = SLV_scaled.fillna(value=0)
+    GLD_scaled = GLD_scaled.fillna(value=0)
+
+    #Plotting figure
+    plt.figure(figsize = (10,6))
+    plt.style.use('fivethirtyeight')
+    plt.plot(SLV_scaled['date'], SLV_scaled['scale'],label='SLV Price',c='silver')
+    plt.plot(GLD_scaled['date'], GLD_scaled['scale'],label='GLD Price',c='gold')
+    plt.title("SLV ETF Price vs GLD ETF Price, Normalized to 2014/10/06")
+    plt.ylabel('Price normalized to price at 2014/10/06')
+    plt.legend()
+
+    # exporting the image to the img folder
+    plt.savefig('img/SLV_vs_GLD_5yrs')
+
+    
 
 def visualization_three(output_image_name):
     pass
